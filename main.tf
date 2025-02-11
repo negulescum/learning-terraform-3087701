@@ -44,7 +44,7 @@ vpc_id = data.aws_vpc.default.id
   from_port = 80
   to_port   = 80
   protocol  = "tcp"
-  cidr_block = ["0.0.0.0/0"]                               # Allow all IP addresses.It is a public blog
+  cidr_blocks = ["0.0.0.0/0"]                               # Allow all IP addresses.It is a public blog
 
 security_group_id = aws_security_group.blog.id            # telling this rule which group it belongs to
 
@@ -55,7 +55,7 @@ resource "aws_security_group_rule" "blog_https_in" {    # adding rules within th
   from_port = 443
   to_port = 443
   protocol = "tcp"
-  cidr_block = ["0.0.0.0/0"]                                # Allow all IP addresses.It is a public blog
+  cidr_blocks = ["0.0.0.0/0"]                                # Allow all IP addresses.It is a public blog
 
 security_group_id = aws_security_group.blog.id               # telling this rule which group it belongs to
 
@@ -66,7 +66,7 @@ resource "aws_security_group_rule" "blog_everything_out" {   # adding rules with
   from_port = 0                       # Allow traffic from any port
   to_port = 0                         # Allow traffic to any port
   protocol = "-1"                     # All protocols are allowed (TCP,UDP,ICMP etc )
-  cidr_block = ["0.0.0.0/0"]          # Allow all IP addresses.It is a public blog
+  cidr_blocks = ["0.0.0.0/0"]          # Allow all IP addresses.It is a public blog
 
 security_group_id = aws_security_group.blog.id # telling this rule which group it belongs to
 
