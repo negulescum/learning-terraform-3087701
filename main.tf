@@ -50,7 +50,7 @@ security_group_id = aws_security_group.blog.id            # telling this rule wh
 
 }
 
-resource "aws_security_group_rule" "blog_https_in"        # adding rules within the security group
+resource "aws_security_group_rule" "blog_https_in"  {      # adding rules within the security group
   type = "ingress"
   from_port = 443
   to_port = 443
@@ -61,7 +61,7 @@ security_group_id = aws_security_group.blog.id               # telling this rule
 
 }
 
-resource "aws_security_group_rule" "blog_everything_out"    # adding rules within the security group. What comes out of the VPC
+resource "aws_security_group_rule" "blog_everything_out" {   # adding rules within the security group. What comes out of the VPC
   type = "egress"
   from_port = 0                       # Allow traffic from any port
   to_port = 0                         # Allow traffic to any port
