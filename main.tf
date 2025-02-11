@@ -50,7 +50,7 @@ security_group_id = aws_security_group.blog.id            # telling this rule wh
 
 }
 
-resource "aws_security_group_rule" "blog_https_in"  {      # adding rules within the security group
+resource "aws_security_group_rule" "blog_https_in" {    # adding rules within the security group
   type = "ingress"
   from_port = 443
   to_port = 443
