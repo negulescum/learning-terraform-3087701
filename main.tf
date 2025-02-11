@@ -39,11 +39,11 @@ vpc_id = data.aws_vpc.default.id
 
 }
 
- resource "aws_security_group_rule" "blog_http_in"        # adding rules within the security group. What gets in
-  type = "ingress"
+ resource "aws_security_group_rule" "blog_http_in"  {     # adding rules within the security group. What gets in
+  type      = "ingress"
   from_port = 80
-  to_port = 80
-  protocol = "tcp"
+  to_port   = 80
+  protocol  = "tcp"
  cidr_block = ["0.0.0.0/0"]                               # Allow all IP addresses.It is a public blog
 
 security_group_id = aws_security_group.blog.id            # telling this rule which group it belongs to
