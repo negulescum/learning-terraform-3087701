@@ -28,9 +28,7 @@ module "blog_vpc" {                                                   # Declares
   
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]    #Creates three public subnets, one per AZ.
 
-  enable_nat_gateway = true    # Enables a NAT Gateway so private subnets can access the internet.
-  enable_vpn_gateway = true    # Enables a VPN Gateway to connect on-premises networks.
-
+  
 
 
   tags          = {
