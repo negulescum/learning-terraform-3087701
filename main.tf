@@ -18,13 +18,34 @@ data "aws_vpc" "default" {
 default = true
 }
 
+module "blog_vpc" {                                                   # Declares a Terraform module named vpc
+  source          = "terraform-aws-modules/vpc/aws"              # Uses a pre-built AWS VPC module from the Terraform Registry.
 
+  name            = "dev"                                      # Sets the VPC name as "dev"
+  cidr            = "10.0.0.0/16"                                 # Assigns a CIDR block (IP range) for the VPC.
+
+  azs             = ["us-west-2a", "us-west-2b", "us-west-2c"]    # Specifies three Availability Zones (eu-west-1a, eu-west-1b, eu-west-1c).
+  
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]    #Creates three public subnets, one per AZ.
+
+  enable_nat_gateway = true    # Enables a NAT Gateway so private subnets can access the internet.
+  enable_vpn_gateway = true    # Enables a VPN Gateway to connect on-premises networks.
+
+
+
+  tags          = {
+    Terraform   = "true"  # Marks resources as managed by Terraform.
+    Environment = "dev"   # Identifies the environment as Development.
+  }
+}
 
 resource "aws_instance" "blog" {
   ami           = data.aws_ami.app_ami.id
   instance_type = var.instance_type
 
 vpc_security_group_ids = [module.blog_sg.security_group_id]     # Add this security group to our Instance. Give a list of multiple security groups that we want to apply
+
+subnet_id = module.blog_vpc.public_subnets[0]
 
   tags = {
     Name = "HelloWorld"
@@ -34,8 +55,8 @@ vpc_security_group_ids = [module.blog_sg.security_group_id]     # Add this secur
 module "blog_sg" {
   source  = "terraform-aws-modules/security-group/aws//modules/http-80"
   version = "4.13.0"
-  name    = "blog_new"
-   vpc_id = data.aws_vpc.default.id
+  name    = "blog"
+   vpc_id = module.blog_vpc.vpc_id
 
    ingress_rules       = ["http-80-tcp" , "https-443-tcp"]
    ingress_cidr_blocks = ["0.0.0.0/0"]
