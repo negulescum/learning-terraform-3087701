@@ -51,23 +51,24 @@ module "autoscaling" {                                      # Define the instanc
    image_id     = data.aws_ami.app_ami.id
   instance_type = var.instance_type
 
-  instance_refresh = {
-    strategy = "Rolling"
-    preferences = {
-      min_healthy_percentage = 50
-    }
-  }
-
-  target_group_arns = module.blog_alb.target_group_arns 
+  
 }
 
 module "blog_alb" {
   source = "terraform-aws-modules/alb/aws"
 
   name    = "blog-alb"
+
+  load_balancer_type = "application"
+
+
   vpc_id  = module.blog_vpc.vpc_id
   subnets = module.blog_vpc.public_subnets
   security_groups = [module.blog_sg.security_group_id]
+
+  target_groups = [
+
+  ]
 
   # Security Group
   security_group_ingress_rules = {
@@ -107,21 +108,20 @@ module "blog_alb" {
     
   }
 
-  target_groups = {
+  target_groups =  [
     ex-instance = {
       name_prefix      = "blog"
       protocol         = "HTTP"
       port             = 80
       target_type      = "instance"
-      target_id        = "aws_instance.blog.id"      # Tells the load balancer where to send traffic
-    }
-  }
 
+    }
+  ]
   tags = {
     Environment = "dev"
   
   }
-}
+
 
 
 
