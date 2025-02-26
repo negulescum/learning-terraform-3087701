@@ -37,20 +37,22 @@ module "blog_vpc" {                                                   # Declares
   }
 }
 
-resource "aws_instance" "blog" {
-  ami           = data.aws_ami.app_ami.id
+module "autoscaling" {                                      # Define the instance in the autoscaling group
+  source  = "terraform-aws-modules/autoscaling/aws"
+  version = "8.1.0"
+  name = "blog"
+  min_size = 1
+  max_size = 1
+
+  vpc_zone_identifier = module.blog_vpc.public_subnets
+  target_groups_arns  = module.blog_alb.target_group.arns     # Specify the target groups
+  security_groups = [module.blog_sg.security_group_id]
+
+   image_id     = data.aws_ami.app_ami.id
   instance_type = var.instance_type
-
-vpc_security_group_ids = [module.blog_sg.security_group_id]     # Add this security group to our Instance. Give a list of multiple security groups that we want to apply
-
-subnet_id = module.blog_vpc.public_subnets[0]
-
-  tags = {
-    Name = "HelloWorld"
-  }
 }
 
-module "alb" {
+module "blog_alb" {
   source = "terraform-aws-modules/alb/aws"
 
   name    = "blog-alb"
