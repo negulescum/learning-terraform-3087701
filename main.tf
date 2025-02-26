@@ -68,6 +68,18 @@ module "blog_alb" {
 
 }
 
+  target_groups =  [
+   {
+    ex-target = {
+      name_prefix = "blog-"
+      protocol    = "HTTP"
+      port        = 80
+      target_type = "instance"
+    }
+  ]
+
+
+
   # Security Group
   security_group_ingress_rules = {
     all_http = {
