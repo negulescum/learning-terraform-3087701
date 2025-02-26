@@ -108,21 +108,6 @@ module "blog_alb" {
     
   }
 
-  target_groups =  [
-    ex-instance = {
-      name_prefix      = "blog"
-      protocol         = "HTTP"
-      port             = 80
-      target_type      = "instance"
-
-    }
-  ]
-  tags = {
-    Environment = "dev"
-  
-  }
-
-
 
 
 module "blog_sg" {
