@@ -45,7 +45,7 @@ module "autoscaling" {                                      # Define the instanc
   max_size = 1
 
   vpc_zone_identifier = module.blog_vpc.public_subnets
-  target_groups_arns  = module.blog_alb.target_group.arns     # Specify the target groups
+  target_group_arns  = module.blog_alb.target_group.arns     # Specify the target groups
   security_groups = [module.blog_sg.security_group_id]
 
    image_id     = data.aws_ami.app_ami.id
