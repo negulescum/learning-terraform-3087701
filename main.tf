@@ -50,6 +50,15 @@ module "autoscaling" {                                      # Define the instanc
 
    image_id     = data.aws_ami.app_ami.id
   instance_type = var.instance_type
+
+  instance_refresh = {
+    strategy = "Rolling"
+    preferences = {
+      min_healthy_percentage = 50
+    }
+  }
+
+  target_group_arns = module.blog_alb.target_group_arns 
 }
 
 module "blog_alb" {
