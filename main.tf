@@ -35,7 +35,7 @@ resource "aws_security_group" "blog" {               # Define the security group
   vpc_id = data.aws_vpc.cloud.id                     # On which VPC the security group should be applied
 }
                 
-resource "aws_security_group_rules" "blog_http_in" {  # Syntax for adding rules to the security group
+resource "aws_security_group_rule" "blog_http_in" {  # Syntax for adding rules to the security group
  type        = "ingress"
   from_port   = 80                                    # Http traffic
   to_port     = 80
