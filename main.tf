@@ -38,9 +38,10 @@ module "securitygroup_blog" {                        # The name of the module
   name    = "new_blog"                                # The name of the new security group that was defined (module)
   vpc_id  = data.aws_vpc.cloud.id                     # On which VPC the security group should be applied
 }
-# Define some rules- When defining multiple ingress rules, you should use a list or a block instead of redefining ingress_rules multiple times.
+# Define some rules
+
  
- ingress_rules       = ["http-80-tcp" , "https-443-tcp"]
+ ingress_rules = ["https-443-tcp","http-80-tcp"]
  ingress_cidr_blocks = ["0.0.0.0/0"]                  # Allow all IPs to access resources
 
 
