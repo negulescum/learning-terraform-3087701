@@ -37,7 +37,7 @@ module "securitygroup_blog" {                        # The name of the module
   version = "5.3.0"
   name    = "new_blog"                                # The name of the new security group that was defined (module)
   vpc_id  = data.aws_vpc.cloud.id                     # On which VPC the security group should be applied
-}
+
 # Define some rules
 
  
@@ -46,8 +46,9 @@ module "securitygroup_blog" {                        # The name of the module
 
 
  egress_rules       = ["all-all"]                     # Open all ports & protocols   all-all       = [-1, -1, "-1", "All protocols"]
- egress_cidr_blocks = ["0.0.0.0/0"]                     
- 
+ egress_cidr_blocks = ["0.0.0.0/0"]   
+                   
+}
 
 
 resource "aws_security_group" "blog" {               # Define the security group 
