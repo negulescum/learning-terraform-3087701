@@ -23,10 +23,31 @@ resource "aws_instance" "web" {                      # Provision a aws instance 
   ami           = data.aws_ami.app_ami.id            # Pulling the image from Data Block (1)
   instance_type = "t3.nano"
 
+  vpc_security_group_ids = [module.securitygroup_blog.security_group_id]    # The syntax is the name of the output of the SG Module.Add the new security group module to the instance
+
+
+  # mannualy defined--> vpc_security_group_ids = [aws_security_group.blog.id]  # A list [] containing a single value/multiple .The Syntax to add the security group to the Instance 
   tags = {
     Name = "HelloWorld"
   }
 }
+
+module "securitygroup_blog" {                        # The name of the module
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "5.3.0"
+  name    = "new_blog"                                # The name of the new security group that was defined (module)
+  vpc_id  = data.aws_vpc.cloud.id                     # On which VPC the security group should be applied
+}
+# Define some rules- When defining multiple ingress rules, you should use a list or a block instead of redefining ingress_rules multiple times.
+ 
+ ingress_rules       = ["http-80-tcp" , "https-443-tcp"]
+ ingress_cidr_blocks = ["0.0.0.0/0"]                  # Allow all IPs to access resources
+
+
+ egress_rules       = ["all-all"]                     # Open all ports & protocols   all-all       = [-1, -1, "-1", "All protocols"]
+ egress_cidr_blocks = ["0.0.0.0/0"]                     
+ 
+
 
 resource "aws_security_group" "blog" {               # Define the security group 
   name        = "blog"                               # The name that will show up in the AWS console
