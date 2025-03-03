@@ -152,7 +152,7 @@ module "securitygroup_blog" {                        # The name of the module
 # description = " allow in hhtp and https . allow out everything"
 
 # vpc_id = data.aws_vpc.cloud.id                     # On which VPC the security group should be applied
- }
+ # }
                 
 # resource "aws_security_group_rule" "blog_http_in" {  # Syntax for adding rules to the security group
 # type        = "ingress"
@@ -162,7 +162,7 @@ module "securitygroup_blog" {                        # The name of the module
 #  cidr_blocks = ["0.0.0.0/0"]                         # Allow all IPs to access resources
 #  security_group_id = aws_security_group.blog.id      # The name of the security group for which these rules applies
 
-}                     
+# }                     
 
 # resource "aws_security_group_rule" "blog_https_in" {
 #  type        = "ingress"
@@ -171,7 +171,7 @@ module "securitygroup_blog" {                        # The name of the module
 #  protocol    = "tcp"
 #  cidr_blocks = ["0.0.0.0/0"]                          # Allow all IPs to access resources
 #  security_group_id = aws_security_group.blog.id
-}
+# }
 
 # resource "aws_security_group_rule" "blog_everything_out" {
 #  type        = "egress"
@@ -180,4 +180,4 @@ module "securitygroup_blog" {                        # The name of the module
 #  protocol    = "-1"                                    # All protocols are allowed
 #  cidr_blocks = ["0.0.0.0/0"]                           # Allow all IPs to access resources
 #  security_group_id = aws_security_group.blog.id
-}
+# }
