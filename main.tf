@@ -48,24 +48,42 @@ module "vpc_blog" {
 
 
 
-resource "aws_instance" "blog" {                      # Provision a aws instance (VM)
-  ami           = data.aws_ami.app_ami.id            # Pulling the image from Data Block (1)
-  instance_type = "t3.nano"
+#resource "aws_instance" "blog" {                      # Provision a aws instance (VM)
+#  ami           = data.aws_ami.app_ami.id            # Pulling the image from Data Block (1)
+#  instance_type = "t3.nano"
 
-  vpc_security_group_ids = [module.securitygroup_blog.security_group_id]    # The syntax is the name of the output of the SG Module.Add the new security group module to the instance
+#  vpc_security_group_ids = [module.securitygroup_blog.security_group_id]    # The syntax is the name of the output of the SG Module.Add the new security group module to the instance
 
-  subnet_id = module.vpc_blog.public_subnets[0]  # [0]= first subnet
+#  subnet_id = module.vpc_blog.public_subnets[0]  # [0]= first subnet
 
   # mannualy defined--> vpc_security_group_ids = [aws_security_group.blog.id]  # A list [] containing a single value/multiple .The Syntax to add the security group to the Instance 
-  tags = {
-    Name = "HelloWorld"
-  }
+#  tags = {
+#    Name = "HelloWorld"
+#  }
+#}
+
+# This will replace the instance
+
+module "autoscaling" {
+  source  = "terraform-aws-modules/autoscaling/aws"
+  version = "8.1.0"
+  
+  name = "blog" 
+  min_size = 1                                                # How big the instance should be
+  max_size = 2
+
+  vpc_zone_identifier = module.vpc_blog.public_subnets        # specify subnets
+  target_group_arns   = module.alb_blog.target_group_arns
+  security_groups     = [module.securitygroup_blog.security_group_id]
+
+  image_id               = data.aws_ami.app_ami.id       
+  instance_type          = var.instance_type
 }
 
 
 # Application Load Balancer
 
-module "alb" {
+module "alb_blog" {
   source = "terraform-aws-modules/alb/aws"
 
   load_balancer_type = "application"
