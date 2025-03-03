@@ -94,7 +94,7 @@ module "alb" {
     }
   }
 
-  # What traffic to listen to
+  # What traffic to listen for- HTTP traffic
 
    http_tcp_listeners = [
     {
@@ -111,7 +111,7 @@ module "alb" {
       protocol         = "HTTP"
       port             = 80
       target_type      = "instance"
-      target_id        = "aws_instance.blog.id"
+      target_id        = "aws_instance.blog.id"  # Tells the LB where to send the traffic
     }
   }
 
