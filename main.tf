@@ -14,8 +14,10 @@ data "aws_ami" "app_ami" {
   owners = ["979382823631"] # Bitnami
 }
 
-data "aws_vpc" "cloud" {        # define data block for VPC
-  default = true                # pulling the default values
+
+# Default VPC
+# data "aws_vpc" "cloud" {        # define data block for VPC
+#  default = true                # pulling the default values
 }
 
 # Terraform module which creates VPC resources on AWS.
@@ -46,19 +48,81 @@ module "vpc_blog" {
 
 
 
-resource "aws_instance" "web" {                      # Provision a aws instance (VM)
+resource "aws_instance" "blog" {                      # Provision a aws instance (VM)
   ami           = data.aws_ami.app_ami.id            # Pulling the image from Data Block (1)
   instance_type = "t3.nano"
 
   vpc_security_group_ids = [module.securitygroup_blog.security_group_id]    # The syntax is the name of the output of the SG Module.Add the new security group module to the instance
 
-  subnet_id = module.vpc_blog.public_subnets[0]  # [0]=first subnet
+  subnet_id = module.vpc_blog.public_subnets[0]  # [0]= first subnet
 
   # mannualy defined--> vpc_security_group_ids = [aws_security_group.blog.id]  # A list [] containing a single value/multiple .The Syntax to add the security group to the Instance 
   tags = {
     Name = "HelloWorld"
   }
 }
+
+
+# Application Load Balancer
+
+module "alb" {
+  source = "terraform-aws-modules/alb/aws"
+
+  load_balancer_type = "application"
+
+
+  name    = "alb_blog"
+  vpc_id  = "module.vpc_blog.vpc_id"
+  subnets = ["module.blog_vpc.public_subnets"]
+  security_groups = module.securitygroup_blog.security_group_id
+
+   # Security Group
+  security_group_ingress_rules = {
+    all_http = {
+      from_port   = 80
+      to_port     = 80
+      ip_protocol = "tcp"
+      description = "HTTP web traffic"
+      cidr_ipv4   = "0.0.0.0/0"
+    }
+    
+  }
+  security_group_egress_rules = {
+    all = {
+      ip_protocol = "-1"
+      cidr_ipv4   = "10.0.0.0/16"
+    }
+  }
+
+  # What traffic to listen to
+
+   http_tcp_listeners = [
+    {
+      port               = 80
+      protocol           = "HTTP"
+      target_group_index = 0
+    }
+  ]
+  
+
+  target_groups = {
+    ex-instance = {
+      name_prefix      = "blog"
+      protocol         = "HTTP"
+      port             = 80
+      target_type      = "instance"
+      target_id        = "aws_instance.blog.id"
+    }
+  }
+
+  tags = {
+    Environment = "dev"
+    Project     = "Example"
+  }
+}
+
+
+
 
 module "securitygroup_blog" {                        # The name of the module
   source  = "terraform-aws-modules/security-group/aws"
