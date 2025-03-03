@@ -18,7 +18,7 @@ data "aws_ami" "app_ami" {
 # Default VPC
 # data "aws_vpc" "cloud" {        # define data block for VPC
 #  default = true                # pulling the default values
-}
+# }
 
 # Terraform module which creates VPC resources on AWS.
 
